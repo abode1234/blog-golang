@@ -71,6 +71,6 @@ func main() {
 
     // Server configuration
     log.Printf("Starting server on :%d", cfg.Server.Port)
-    router.SetTrustedProxies(nil) // Remove proxy warning
+    router.SetTrustedProxies(nil)
     router.Run(fmt.Sprintf(":%d", cfg.Server.Port))
 }
