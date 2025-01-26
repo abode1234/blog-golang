@@ -1,2 +1,1 @@
-language = "go"
-run = "cd cmd/blog && go run main.go"
+run = "docker run -d -p 8080:8080  blog"
