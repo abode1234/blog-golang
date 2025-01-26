@@ -1,0 +1,50 @@
+{{ define "partials/home.html" }}
+<div class="space-y-12">
+    <section class="text-center">
+        <h1 class="text-4xl font-bold text-primary mb-4">{{ .Site.Name }}</h1>
+        <p class="text-xl text-secondary">{{ .Site.Description }}</p>
+    </section>
+
+    <section>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-primary">Recent Posts</h2>
+            <a href="/posts" 
+               class="text-secondary hover:text-primary transition-colors duration-200 flex items-center space-x-2 group"
+               hx-boost="true">
+                <span>View All Posts</span>
+                <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full border-separate border-spacing-y-2">
+                <thead>
+                    <tr>
+                        <th class="text-left pb-4 text-secondary font-medium text-lg px-6">Title</th>
+                        <th class="text-right pb-4 text-secondary font-medium text-lg px-6">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Posts }}
+                    <tr class="hover:bg-card transition-colors duration-200">
+                        <td class="py-5 px-6">
+                            <a href="/posts/{{ .Slug }}" 
+                               class="block text-primary hover:text-secondary transition-colors"
+                               hx-boost="true">
+                                <div class="text-lg font-medium">{{ .Title }}</div>
+                                {{ if .Excerpt }}
+                                <p class="text-secondary mt-1 line-clamp-2">{{ .Excerpt }}</p>
+                                {{ end }}
+                            </a>
+                        </td>
+                        <td class="text-right py-5 px-6 text-secondary whitespace-nowrap align-top">
+                            {{ .FormattedDate }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{{ end }}

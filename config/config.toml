@@ -1,0 +1,12 @@
+[site]
+name = "Abdul Almotaleb Hussain"
+description = "Exploring the intersection of web development, AI, and cybersecurity"
+author = "Abdul Almotaleb Hussain"
+
+[site.social]
+github = "https://github.com/yourprofile"
+x = "https://x.com/yourprofile"
+linkedin = "https://linkedin.com/in/yourprofile"
+
+[server]
+port = 8080

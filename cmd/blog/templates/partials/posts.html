@@ -1,0 +1,73 @@
+{{ define "partials/posts.html" }}
+<div class="space-y-12">
+    <section class="text-center max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-primary mb-4">Blog Posts</h1>
+        <p class="text-xl text-secondary">All articles sorted by date</p>
+    </section>
+
+    <section class="overflow-x-auto -mx-4">
+        <table class="w-full max-w-full mx-auto border-separate border-spacing-y-2">
+            <thead>
+                <tr>
+                    <th class="text-left pb-4 text-secondary font-medium text-lg px-12">Title</th>
+                    <th class="text-right pb-4 text-secondary font-medium text-lg px-12 w-48">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Posts }}
+                <tr class="hover:bg-card transition-colors duration-200">
+                    <td class="py-5 px-12">
+                        <a href="/posts/{{ .Slug }}" 
+                           class="block text-primary hover:text-secondary transition-colors"
+                           hx-boost="true">
+                            <div class="text-lg font-medium">{{ .Title }}</div>
+                            {{ if .Excerpt }}
+                            <p class="text-secondary mt-1 line-clamp-2 pr-12">{{ .Excerpt }}</p>
+                            {{ end }}
+                        </a>
+                    </td>
+                    <td class="text-right py-5 px-12 text-secondary whitespace-nowrap align-top w-48">
+                        {{ .FormattedDate }}
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<style>
+    /* Optional: Add subtle row dividers */
+    tbody tr {
+        position: relative;
+    }
+    
+    tbody tr::after {
+        content: '';
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        height: 1px;
+        bottom: 0;
+        background: var(--border-color);
+        opacity: 0.1;
+    }
+    
+    /* Optional: Add hover effect */
+    tbody tr:hover {
+        transform: translateX(4px);
+        transition: transform 0.2s ease;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        table {
+            max-width: 100%;
+        }
+        td, th {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+    }
+</style>
+{{ end }} 

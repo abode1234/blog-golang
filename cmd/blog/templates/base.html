@@ -1,0 +1,327 @@
+{{ define "base.html" }}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ .Site.Description }}">
+    <meta name="author" content="{{ .Site.Author }}">
+    <!-- Add favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>{{ .Site.Name }}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base styles */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        
+        /* Responsive typography */
+        @media (max-width: 640px) {
+            .prose {
+                font-size: 0.95rem;
+            }
+            .prose h1 {
+                font-size: 1.75rem;
+            }
+            .prose h2 {
+                font-size: 1.4rem;
+            }
+            .prose h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Base prose styles */
+        .prose {
+            max-width: 65ch;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        .prose pre {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        .prose code {
+            color: #e5e7eb;
+            background-color: #374151;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .prose pre code {
+            background-color: transparent;
+            padding: 0;
+            white-space: pre;
+            word-break: normal;
+            word-spacing: normal;
+        }
+        .prose a {
+            color: #60a5fa;
+            text-decoration: underline;
+            word-break: break-word;
+        }
+        .prose h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            scroll-margin-top: 5rem;
+        }
+        .prose h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            scroll-margin-top: 5rem;
+        }
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        /* Light theme */
+        html {
+            background-color: #ffffff;
+            color: #1e293b;
+        }
+        html nav {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: #e2e8f0;
+        }
+        html footer {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        html .bg-card {
+            background-color: #f8fafc;
+        }
+        html .text-primary {
+            color: #1e293b;
+        }
+        html .text-secondary {
+            color: #64748b;
+        }
+
+        /* Dark theme */
+        html[data-theme="dark"] {
+            background-color: #000000;
+            color: #f1f5f9;
+        }
+        html[data-theme="dark"] nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-color: #1a1a1a;
+        }
+        html[data-theme="dark"] footer {
+            background-color: #0a0a0a;
+            border-color: #1a1a1a;
+        }
+        html[data-theme="dark"] .bg-card {
+            background-color: #0a0a0a;
+        }
+        html[data-theme="dark"] .text-primary {
+            color: #ffffff;
+        }
+        html[data-theme="dark"] .text-secondary {
+            color: #a1a1aa;
+        }
+
+        /* Update code block colors for dark theme */
+        html[data-theme="dark"] .prose pre {
+            background-color: #0a0a0a;
+        }
+        html[data-theme="dark"] .prose code {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* Animations and transitions */
+        html, body, nav, footer, .bg-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .bg-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        
+        .bg-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Navigation links animation */
+        nav a, nav button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        nav a::after, nav button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after, nav button:hover::after {
+            width: 100%;
+        }
+
+        /* Social icons animation */
+        .social-icon {
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Theme toggle animation */
+        .theme-icon {
+            transition: transform 0.5s ease;
+        }
+
+        button:hover .theme-icon {
+            transform: rotate(360deg);
+        }
+
+        /* Backdrop blur for nav */
+        nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Add container styles */
+        .max-w-7xl {
+            max-width: 80rem; /* Increase from default Tailwind value */
+        }
+
+        /* Add padding for better spacing */
+        @media (min-width: 1280px) {
+            .max-w-7xl {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed header -->
+    <nav class="sticky top-0 z-50 border-b backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-xl font-bold text-primary" hx-boost="true">
+                    <i class="fas fa-home"></i>
+                </a>
+                <div class="space-x-4 sm:space-x-6">
+                    <a href="/" class="text-secondary hover:text-primary" hx-boost="true">Home</a>
+                    <a href="/posts" class="text-secondary hover:text-primary" hx-boost="true">Posts</a>
+                    <a href="/about" class="text-secondary hover:text-primary" hx-boost="true">About</a>
+                    <button onclick="toggleTheme()" class="text-secondary hover:text-primary">
+                        <i class="fas theme-icon fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        {{ if eq .Content "home" }}
+            {{ template "partials/home.html" . }}
+        {{ else if eq .Content "posts" }}
+            {{ template "partials/posts.html" . }}
+        {{ else if eq .Content "post" }}
+            {{ template "partials/post.html" . }}
+        {{ else if eq .Content "about" }}
+            {{ template "partials/about.html" . }}
+        {{ end }}
+    </main>
+
+    <!-- Fixed footer -->
+    <footer class="border-t mt-auto py-4">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center space-x-6">
+                <a href="{{ .Site.Social.Github }}" 
+                   class="text-secondary hover:text-primary"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fab fa-github text-lg social-icon"></i>
+                </a>
+                <a href="{{ .Site.Social.X }}" 
+                   class="text-secondary hover:text-primary"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fab fa-x text-lg social-icon"></i>
+                </a>
+                <a href="{{ .Site.Social.Linkedin }}" 
+                   class="text-secondary hover:text-primary"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fab fa-linkedin text-lg social-icon"></i>
+                </a>
+                <span class="text-sm text-secondary">© {{ .Site.Author }} {{ now.Year }}</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? '' : 'dark';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        const themeIcon = document.querySelector('.theme-icon');
+        if (newTheme === 'dark') {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+    }
+
+    // Initialize theme
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : '');
+        
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        const themeIcon = document.querySelector('.theme-icon');
+        if (theme === 'dark') {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    });
+    </script>
+</body>
+</html>
+{{ end }}

@@ -1,0 +1,58 @@
+{{ define "partials/post.html" }}
+<article class="space-y-6">
+    <header class="space-y-2">
+        <h1 class="text-3xl font-bold">{{ .Post.Title }}</h1>
+        <div class="text-gray-400">{{ .Post.FormattedDate }}</div>
+    </header>
+
+    <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+        <button class="flex items-center space-x-2 text-gray-300 hover:text-white w-full" 
+                onclick="toggleTOC()"
+                id="tocButton">
+            <span class="text-sm">▶</span>
+            <span>Table of Contents</span>
+        </button>
+        <div id="tocContent" class="hidden mt-4 space-y-2">
+            <!-- Table of contents will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="prose">
+        {{ .Post.Content }}
+    </div>
+</article>
+
+<script>
+function toggleTOC() {
+    const tocContent = document.getElementById('tocContent');
+    const tocButton = document.getElementById('tocButton').querySelector('span');
+    if (tocContent.classList.contains('hidden')) {
+        tocContent.classList.remove('hidden');
+        tocButton.textContent = '▼';
+    } else {
+        tocContent.classList.add('hidden');
+        tocButton.textContent = '▶';
+    }
+}
+
+// Generate table of contents
+document.addEventListener('DOMContentLoaded', () => {
+    const headings = document.querySelectorAll('.prose h2, .prose h3');
+    const tocContent = document.getElementById('tocContent');
+    
+    headings.forEach((heading, index) => {
+        const link = document.createElement('a');
+        const id = `heading-${index}`;
+        heading.id = id;
+        
+        link.href = `#${id}`;
+        link.textContent = heading.textContent;
+        link.className = `block text-gray-300 hover:text-white ${
+            heading.tagName === 'H3' ? 'ml-4' : ''
+        }`;
+        
+        tocContent.appendChild(link);
+    });
+});
+</script>
+{{ end }}
