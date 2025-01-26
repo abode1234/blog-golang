@@ -25,7 +25,7 @@ type GitHubFile struct {
 }
 
 func (m *Manager) LoadPostsFromGitHub() error {
-	repoURL := "https://api.github.com/repos/YOUR_GITHUB_USERNAME/blog-posts/contents"
+	repoURL := "https://api.github.com/repos/abode1234/blog-posts/contents"
 	
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", repoURL + "/posts", nil)

@@ -1,12 +1,12 @@
 {{ define "partials/post.html" }}
 <article class="space-y-6">
     <header class="space-y-2">
-        <h1 class="text-3xl font-bold">{{ .Post.Title }}</h1>
-        <div class="text-gray-400">{{ .Post.FormattedDate }}</div>
+        <h1 class="text-3xl font-bold text-primary">{{ .Post.Title }}</h1>
+        <div class="text-secondary">{{ .Post.FormattedDate }}</div>
     </header>
 
-    <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-        <button class="flex items-center space-x-2 text-gray-300 hover:text-white w-full" 
+    <div class="bg-card p-4 rounded-lg">
+        <button class="flex items-center space-x-2 text-secondary hover:text-primary w-full" 
                 onclick="toggleTOC()"
                 id="tocButton">
             <span class="text-sm">▶</span>
@@ -40,16 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const headings = document.querySelectorAll('.prose h2, .prose h3');
     const tocContent = document.getElementById('tocContent');
     
+    if (headings.length === 0) {
+        const noToc = document.createElement('p');
+        noToc.className = 'text-secondary text-sm';
+        noToc.textContent = 'No sections available';
+        tocContent.appendChild(noToc);
+        return;
+    }
+    
     headings.forEach((heading, index) => {
-        const link = document.createElement('a');
-        const id = `heading-${index}`;
-        heading.id = id;
+        // إضافة ID للعنوان إذا لم يكن موجوداً
+        if (!heading.id) {
+            heading.id = `heading-${index}`;
+        }
         
-        link.href = `#${id}`;
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
         link.textContent = heading.textContent;
-        link.className = `block text-gray-300 hover:text-white ${
-            heading.tagName === 'H3' ? 'ml-4' : ''
-        }`;
+        link.className = `block transition-colors duration-200 ${
+            heading.tagName === 'H3' ? 'ml-4 text-secondary' : 'text-primary'
+        } hover:text-primary`;
+        
+        // إضافة تأثير عند النقر
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            heading.scrollIntoView({ behavior: 'smooth' });
+            window.location.hash = heading.id;
+        });
         
         tocContent.appendChild(link);
     });

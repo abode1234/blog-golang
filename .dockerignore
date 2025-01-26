@@ -1,0 +1,8 @@
+# Ignore unnecessary files
+dist/
+posts/
+.git/
+.gitignore
+Dockerfile
+.dockerignore
+*.md
