@@ -1,7 +1,7 @@
 ---
 title: "🤖 Cross-Language Reinforcement Learning Simulator"
 date: 2024-08-27
-excerpt: "NestJS: Building a Robust Authentication System with NestJS"
+excerpt: "Go: Building a Reinforcement Learning System with Go"
 ---
 
 ## Bridging Go and Python for Advanced Machine Learning
